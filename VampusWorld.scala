@@ -56,6 +56,7 @@ class Speleologist(navigator: ActorRef, environment: ActorRef) extends Actor {
           action = "C"
         if actionDescription contains "grab" then
           action = "G"
+       
         environment ! ActionMessage(action)
   }
 }
@@ -76,7 +77,8 @@ class Navigator extends Actor {
         if locationDescription.contains("gold") then
           actionDescription = "Try to grab it"
           isGoldFound = true
-        if locationDescription.contains("nothing") then
+        if locationDescription.contains("nothing") == true then
+          actionDescription = "Go forward"
           if isGoldFound == true then
             actionDescription = "Lets climb out of here"
             sender() ! ActionMessage(actionDescription)
@@ -112,7 +114,7 @@ class Environment extends Actor {
         println("Environment get WhereAmIMessage message")
         sender() ! LocationInfoMessage(cave(speleologistCoords(0))(speleologistCoords(1)))
     case ActionMessage(action) =>
-        println("Environment get WhereAmIMessage message" + " action: " + action)
+        println("Environment get ActionMessage message" + " action: " + action)
         action match {
           case "L" => 
             if speleologistCoords(1) > 0 then
